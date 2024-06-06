@@ -5,6 +5,11 @@ const conn = require("./db/conn");
 const Usuario = require("./models/Usuario");
 const Jogo = require("./models/Jogo")
 
+const handlebars = require ("express-handlebars");
+
+app.engine("handlebars", handlebars.engine());
+app.set ("view enigne", "handlebars");
+ 
 
 conn
     .authenticate()
