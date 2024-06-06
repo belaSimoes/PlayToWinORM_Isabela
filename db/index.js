@@ -1,78 +1,61 @@
-
 require("dotenv").config();
-const conn = require("./db/conn");
+const connection = require("./db/connection");
 
 const Usuario = require("./models/Usuario");
-const Jogo = require("./models/Jogo")
-
-const handlebars = require ("express-handlebars");
-
-app.engine("handlebars", handlebars.engine());
-app.set ("view enigne", "handlebars");
- 
-
-conn
-    .authenticate()
-    .then(() => {
-     console.log("Banco de Dados conectado e estrutura sicronizada!"); 
-    })
-    .catch(() => {
-     console.log("Erro ao concetar/sincronizar o banco de dados:" + err);
-    });
+connection.
+sync()
+.then(() => {
+    console.log("Conectando e sincronizando!");
+})
+.catch((err) => {
+    console.log("Ocorreu um erro: " + err);
+});
 
 const express = require("express");
+
+const handlebars = require("express-handlebars");
+
 const app = express();
+app.engine("handlebars", handlebars.engine());
+app.set("view engine", "handlebars");
+
+app.use(express.urlencoded({ urlencoded: true }));
+app.use(express.json());
 
 app.use(
     express.urlencoded({
         extended: true,
     })
 );
-app.use(expresse.json());
+app.use(express.json());
 
 app.get("/usuarios/novo", (req, res) => {
-    res.sendFile(`${__dirname}/views/formUsuario.htlm`)
+    res.render(`formUsuario`);
 });
-app.get("/jogos/novo", (req, res) =>{
-    res.sendFile(`${__dirname}/views/formJogo.html`)
+
+app.get("/", (req, res) => {
+    res.render(`home`);
 });
+
+app.get("/usuarios", (req, res) => {
+    res.render(`usuarios`);
+});
+
 
 app.post("/usuarios/novo", async (req, res) => {
     const nickname = req.body.nickname;
     const nome = req.body.nome;
-
+    
     const dadosUsuario = {
         nickname,
         nome,
     };
-
+});
 
 const usuario = await Usuario.create(dadosUsuario);
+res.sent("Usuário inserido sob o id " + usuario.id);
 
-res.send("Usuário inserido sob o id" + usuario.id)
+app.listen(8000, () => {
+    console.log("Server rodando na porta 8000¹");
 });
 
-app.listen(8000, () =>{
-    console.log("Server rodando na porta 8000!");
-});
-
-app.post("/jogos/novo", async (req, res) => {
-    const titulo = req.body.titulo;
-    const desc = req.body.desc;
-    const prec = req.body.prec;
-
-    const dadosJogo = {
-        titulo,
-        desc,
-        prec,
-    };
-
-
-const jogo = await Jogo.create(dadosJogo);
-
-res.send("Usuário inserido sob o id" + jogo.id)
-});
-
-app.listen(8000, () =>{
-    console.log("Server rodando na porta 8000!");
-});
