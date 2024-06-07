@@ -1,5 +1,5 @@
 require("dotenv").config();
-const connection = require("./db/connection");
+const connection = require("./db/conn");
 
 const Usuario = require("./models/Usuario");
 connection.
@@ -19,14 +19,8 @@ const app = express();
 app.engine("handlebars", handlebars.engine());
 app.set("view engine", "handlebars");
 
-app.use(express.urlencoded({ urlencoded: true }));
-app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.use(
-    express.urlencoded({
-        extended: true,
-    })
-);
 app.use(express.json());
 
 app.get("/usuarios/novo", (req, res) => {
@@ -50,10 +44,11 @@ app.post("/usuarios/novo", async (req, res) => {
         nickname,
         nome,
     };
-});
 
-const usuario = await Usuario.create(dadosUsuario);
-res.sent("Usuário inserido sob o id " + usuario.id);
+
+    const usuario = await Usuario.create(dadosUsuario);
+    res.send("Usuário inserido sob o id " + usuario.id);
+});
 
 app.listen(8000, () => {
     console.log("Server rodando na porta 8000¹");
