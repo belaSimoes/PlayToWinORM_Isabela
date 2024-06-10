@@ -31,8 +31,9 @@ app.get("/", (req, res) => {
     res.render(`home`);
 });
 
-app.get("/usuarios", (req, res) => {
-    res.render(`usuarios`);
+app.get("/usuarios", async (req, res) => {
+    const usuarios = Usuario.findAll ({raw: true})
+    res.render(`usuarios`, { usuarios});
 });
 
 
@@ -48,6 +49,13 @@ app.post("/usuarios/novo", async (req, res) => {
 
     const usuario = await Usuario.create(dadosUsuario);
     res.send("Usuário inserido sob o id " + usuario.id);
+});
+
+app.get("/usuarios/:id/atualizar", (req, res) =>{
+    const id = req.params.id;
+    const usuario = Usuario.findByPk(id, {raw: true});
+    
+    res.render("formUsuario", {usuario});
 });
 
 app.listen(8000, () => {
