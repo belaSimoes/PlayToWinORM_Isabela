@@ -4,8 +4,8 @@ const conn = require("./db/conn");
 const handlebars = require("express-handlebars");
 const Usuario = require("./models/Usuario");
 const Jogo = require("./models/Jogo");
-const Cartao = require("./models/Cartao");
-const Conquista = require("./models/Conquista")
+const Cartao = require("./models/cartao");
+const Conquista = require("./models/conquista")
 const { DataTypes } = require("sequelize");
 
 const app = express();
